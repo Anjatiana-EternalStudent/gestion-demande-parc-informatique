@@ -2,7 +2,10 @@ from django.shortcuts import render
 from .serializers import TicketSerializer
 from .models import Tickets
 from rest_framework import viewsets
-from rest_framework.permissions import IsAuthenticated, BasePermission, SAFE_METHODS
+from rest_framework.permissions import IsAuthenticated, BasePermission, SAFE_METHODS,IsAdminUser
+from rest_framework.views import APIView
+from django.contrib.auth import get_user_model
+from rest_framework.response import Response
 # Create your views here.
 class TicketPermission(BasePermission):
     def has_object_permission(self, request, view, obj):
@@ -31,7 +34,7 @@ class TicketViewSet(viewsets.ModelViewSet):
         if user.role == "USER":
             return Tickets.objects.filter(demandeur=user)
         elif user.role == "TECH":
-            return Tickets.objects.filter(techinicien = user)
+            return Tickets.objects.filter(technicien = user)
         else:
             return Tickets.objects.all()
     def perform_create(self, serializer):
@@ -48,3 +51,12 @@ class TicketViewSet(viewsets.ModelViewSet):
             )
         else:
             serializer.save()
+
+class TechnicianList(APIView):
+    permission_classes = [IsAdminUser]
+    def get(self, request):
+        User = get_user_model()
+        techs = User.objects.exclude(id=request.user.id).values(
+            'id', 'username', 'email', 'role'
+        ).order_by('username').filter(role="TECH")
+        return Response(list(techs))
