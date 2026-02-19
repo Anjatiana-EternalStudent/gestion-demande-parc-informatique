@@ -1,0 +1,60 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Gestion Tickets - Dashboard</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+</head>
+<body data-user-is-staff="{% if user.is_staff %}true{% else %}false{% endif %}" data-user-role="{{ user.role|default:'USER' }}">
+
+    <div class="header">
+        <h1>
+            <i class="fa-solid fa-ticket"></i>
+            Gestion Parc Informatique
+        </h1>
+        <div>
+            <span>{{ user.username }} &mdash; {{ user.role|default:"USER" }}</span>
+            <a href="{% url 'login' %}" class="logout">
+                <i class="fa-solid fa-arrow-right-from-bracket"></i>
+                Déconnexion
+            </a>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="stats">
+            <div class="stat-card">
+                <h3>Nouveau ticket</h3>
+                <button id="newTicket" class="btn-primary">
+                    <i class="fa-solid fa-plus"></i>
+                    Créer
+                </button>
+            </div>
+        </div>
+
+        <div class="table-container">
+            <table id="ticketsTable">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Titre</th>
+                        <th>Description</th>
+                        <th>Statut</th>
+                        <th>Priorité</th>
+                        <th>Technicien</th>
+                        <th>Date</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="ticketsBody">
+                    <tr><td colspan="8">Chargement des tickets...</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    {% csrf_token %}
+    <script src="{% static 'js/app.js' %}"></script>
+</body>
+</html>
