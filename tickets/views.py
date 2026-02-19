@@ -60,7 +60,7 @@ class TicketViewSet(viewsets.ModelViewSet):
         old_technicien = ticket.technicien
         old_statut = ticket.statut
 
-        serializer.save()
+        ticket = serializer.save()
         ticket.refresh_from_db()
 
         # Si l'admin assigne un technicien
