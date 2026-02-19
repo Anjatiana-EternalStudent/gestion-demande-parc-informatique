@@ -17,3 +17,5 @@ class TicketViewSet(viewsets.ModelViewSet):
             return Tickets.objects.filter(techinicien = user)
         else:
             return Tickets.objects.all()
+    def perform_create(self, serializer):
+        serializer.save(demandeur = self.request.user)
